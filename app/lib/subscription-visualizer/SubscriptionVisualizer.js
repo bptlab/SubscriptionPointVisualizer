@@ -1,4 +1,5 @@
 import SubscriptionFinder from "./SubscriptionFinder";
+import { isChoreography } from "./Utils";
 
 export default function SubscriptionVisualizer(viewer) {
     this.subscriptionFinder = new SubscriptionFinder(viewer);
@@ -53,8 +54,4 @@ SubscriptionVisualizer.prototype.selected = function(element) {
 
 function marker(width, height, color) {
     return `<div class="highlight-overlay" style="background-color: ${color}; width: ${width}px; height: ${height}px"></div>`   
-}
-
-function isChoreography(element) {
-    return ['bpmn:ChoreographyTask', 'bpmn:SubChoreography', 'bpmn:CallChoreography'].includes(element.type);
 }
