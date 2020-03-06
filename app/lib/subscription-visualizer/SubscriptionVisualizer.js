@@ -1,4 +1,7 @@
+import SubscriptionFinder from "./SubscriptionFinder";
+
 export default function SubscriptionVisualizer(viewer) {
+    this.subscriptionFinder = new SubscriptionFinder(viewer);
     this.overlays = viewer.get('overlays');
     this.elementRegistry = viewer.get('elementRegistry');
     viewer.on('element.click', event => this.selected(event.element));
@@ -11,20 +14,18 @@ SubscriptionVisualizer.prototype.showSome = function() {
 }
 
 SubscriptionVisualizer.prototype.showFor = function(element) {
-    const width = 5;
     if(!element) return;
+    const width = 5;
+    let subscription = this.subscriptionFinder.findSubscriptionsFor(element);
 
-    let html = 
-        `<div class="highlight-overlay" style="background-color: #00FF55AA; width: ${width}px; height: ${element.height}px"></div>`
-
-    let left = this.overlays.add(element, {
+    let left = this.overlays.add(subscription.subscribeTask, {
         position: {
         left: -width
         },
         html: marker(width, element.height, '#00FF55AA')
     });
 
-    let right = this.overlays.add(element, {
+    let right = this.overlays.add(subscription.unsubscribeTask, {
         position: {
         right: 0
         },
