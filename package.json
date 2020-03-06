@@ -1,0 +1,47 @@
+{
+  "name": "subscription-point-visualizer",
+  "version": "0.0.1",
+  "description": "Visualizes subscription points in bpmn choreography diagrams.",
+  "main": "app/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "grunt build",
+    "serve": "grunt serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bptlab/subscription-point-visualizer.git"
+  },
+  "keywords": [
+    "Process Choreography"
+  ],
+  "author": "Leon Bein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bptlab/subscription-point-visualizer/issues"
+  },
+  "homepage": "https://github.com/bptlab/subscription-point-visualizer#readme",
+  "devDependencies": {
+    "esmify": "^2.1.1",
+    "browserify": "^16.1.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-bpmn-io": "^0.7.0",
+    "grunt": "~0.4.4",
+    "grunt-browserify": "^4.0.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-connect": "~0.11.2",
+    "grunt-contrib-copy": "~0.8.1",
+    "grunt-contrib-less": "^2.0.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "load-grunt-tasks": "~3.2.0",
+    "stringify": "^3.1.0",
+    "time-grunt": "^0.3.2",
+    "watchify": "^3.10.0"
+  },
+  "dependencies": {
+    "bpmn-js-properties-panel": "^0.33.1",
+    "chor-js": "^0.4.3",
+    "inherits": "^2.0.1",
+    "jquery": "^3.3.1"
+  }
+}
