@@ -6,6 +6,8 @@ import Reporter from './lib/validator/Validator.js';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from './lib/properties-provider';
 
+import SubscriptionVisualizer from './lib/subscription-visualizer/SubscriptionVisualizer';
+
 var modeler = new ChoreoModeler({
   container: '#canvas',
   propertiesPanel: {
@@ -45,6 +47,7 @@ function saveDiagram(done) {
 
 $(function() {
   const reporter = new Reporter(modeler);
+  const subscriptionVisualizer = new SubscriptionVisualizer(modeler);
   var downloadLink = $('#js-download-diagram');
   var downloadSvgLink = $('#js-download-svg');
   const validateButton = $('#js-validate');
@@ -75,7 +78,7 @@ $(function() {
   });
 
   subscriptionsButton.click(e => {
-      alert('todo');
+      subscriptionVisualizer.showSome();
   });
 
   $('.buttons a').click(function(e) {
