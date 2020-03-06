@@ -1,11 +1,12 @@
 import { isChoreography } from "./Utils";
 
-export default function SubscriptionFinder(viewer) {
-    
+export default function SubscriptionFinder() {
+
 }
 
-SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
-    let before = search(task, incoming, isChoreography);
+SubscriptionFinder.prototype.findSubscriptionsFor = function(task, participant) {
+    console.log(getParticipants(task));
+    let before = search(task, incoming, each => isChoreography(each));
     let after = search(task, outgoing, isChoreography);
     return new Subscription(before[before.length - 1] || task, after[after.length - 1] || task);
 }
@@ -35,4 +36,37 @@ function search(task, direction, filter) {
         });
     }
     return result;
+}
+
+/**
+ * At deployment time, subscribe to all events you may receive before sending any message yourself
+ * @param {*} task 
+ */
+SubscriptionFinder.prototype.rule1 = function(task) {
+    //TODO
+}
+
+/**
+ * Before sending a message, subscribe to all events you may receive before sending the next message
+ */
+SubscriptionFinder.prototype.rule2 = function(task) {
+
+}
+
+
+
+function getParticipants(task) {
+    let initiator = task.businessObject.get('initiatingParticipantRef').id;
+    let refs = task.businessObject.get('participantRef');
+    if(refs[0].id === initiator) {
+        return {
+            initiator : refs[0],
+            receiver : refs[1]
+        }
+    } else if(refs[1].id === initiator) {
+        return {
+            initiator : refs[1],
+            receiver : refs[0]
+        }
+    } else return undefined;
 }

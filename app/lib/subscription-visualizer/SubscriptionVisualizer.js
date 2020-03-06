@@ -17,7 +17,7 @@ SubscriptionVisualizer.prototype.showSome = function() {
 SubscriptionVisualizer.prototype.showFor = function(element) {
     if(!element) return;
     const width = 5;
-    let subscription = this.subscriptionFinder.findSubscriptionsFor(element);
+    let subscription = this.subscriptionFinder.findSubscriptionsFor(element, 'Customer');
 
     let left = this.overlays.add(subscription.subscribeTask, {
         position: {
