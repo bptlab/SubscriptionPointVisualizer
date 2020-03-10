@@ -17,23 +17,23 @@ SubscriptionVisualizer.prototype.showSome = function() {
 SubscriptionVisualizer.prototype.showFor = function(element) {
     if(!element) return;
     const width = 5;
-    let subscription = this.subscriptionFinder.findSubscriptionsFor(element, 'Customer');
+    let subscription = this.subscriptionFinder.findSubscriptionsFor(element);
 
-    let left = this.overlays.add(subscription.subscribeTask, {
-        position: {
-        left: -width
-        },
-        html: marker(width, element.height, '#00FF55AA')
-    });
+    let left = subscription.subscribeTasks.map(each => 
+        this.overlays.add(each, {
+            position: {left: -width},
+            html: marker(width, element.height, '#00FF55AA')
+        })
+    );
 
-    let right = this.overlays.add(subscription.unsubscribeTask, {
-        position: {
-        right: 0
-        },
-        html: marker(width, element.height, '#FF2222AA')
-    });
+    let right = subscription.unsubscribeTasks.map(each =>
+        this.overlays.add(each, {
+            position: {right: 0},
+            html: marker(width, element.height, '#FF2222AA')
+        })
+    );
     this.selectedElement = element;
-    this.overlayIds = [left, right];
+    this.overlayIds = left.concat(right);
 }
 
 SubscriptionVisualizer.prototype.hideOverlays = function() {

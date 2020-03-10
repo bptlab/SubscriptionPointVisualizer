@@ -4,16 +4,45 @@ export default function SubscriptionFinder() {
 
 }
 
-SubscriptionFinder.prototype.findSubscriptionsFor = function(task, participant) {
+SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
+    let receiver = getParticipants(task).receiver;
     console.log(getParticipants(task));
-    let before = search(task, incoming, each => isChoreography(each));
+    let before = search(task, incoming, each => isChoreography(each) && getParticipants(each).initiator === receiver);
     let after = search(task, outgoing, isChoreography);
-    return new Subscription(before[before.length - 1] || task, after[after.length - 1] || task);
+    let subscribe   = before[0] || task;
+    let unsubscribe = this.rule3(task) || this.rule4(task) || after[after.length - 1]   || task;
+    return new Subscription(subscribe, unsubscribe);
 }
 
-function Subscription(subscribeTask, unsubscribeTask) {
-    this.subscribeTask = subscribeTask;
-    this.unsubscribeTask = unsubscribeTask;
+/**
+ * At deployment time, subscribe to all events you may receive before sending any message yourself
+ * @param {*} task 
+ */
+SubscriptionFinder.prototype.rule1 = function(task) {
+    //TODO
+    return false;
+}
+
+/**
+ * Before sending a message, subscribe to all events you may receive before sending the next message
+ */
+SubscriptionFinder.prototype.rule2 = function(task) {
+
+}
+
+SubscriptionFinder.prototype.rule3 = function(task) {
+
+}
+
+SubscriptionFinder.prototype.rule4 = function(task) {
+
+}
+
+function Subscription(subscribeTasks, unsubscribeTasks) {
+    if(!Array.isArray(subscribeTasks))subscribeTasks = [subscribeTasks];
+    if(!Array.isArray(unsubscribeTasks))unsubscribeTasks = [unsubscribeTasks];
+    this.subscribeTasks = subscribeTasks;
+    this.unsubscribeTasks = unsubscribeTasks;
 }
 
 const outgoing = 'outgoing';
@@ -37,23 +66,6 @@ function search(task, direction, filter) {
     }
     return result;
 }
-
-/**
- * At deployment time, subscribe to all events you may receive before sending any message yourself
- * @param {*} task 
- */
-SubscriptionFinder.prototype.rule1 = function(task) {
-    //TODO
-}
-
-/**
- * Before sending a message, subscribe to all events you may receive before sending the next message
- */
-SubscriptionFinder.prototype.rule2 = function(task) {
-
-}
-
-
 
 function getParticipants(task) {
     let initiator = task.businessObject.get('initiatingParticipantRef').id;
