@@ -1,5 +1,5 @@
 
-import SubscriptionFinder, { DEPLOYMENT_TIME } from '../../app/lib/subscription-visualizer/SubscriptionFinder';
+import SubscriptionFinder, { DEPLOYMENT_TIME, UNDEPLOYMENT_TIME } from '../../app/lib/subscription-visualizer/SubscriptionFinder';
 import { withModeler } from '../testUtils';
 
 const basicChoreography = require('../resources/BasicChoreography.bpmn');
@@ -29,22 +29,22 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        // it('should subscribe at deploy time when no send is done before', 
-        //     withModeler(sequentialChoreography, modeler => {
-        //         let finder = new SubscriptionFinder();
-        //         let registry = modeler.get('elementRegistry');
-        //         let activity = registry.get('Activity2');
-        //         expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql(DEPLOYMENT_TIME);
-        //     }
-        // ));
+        it('should subscribe at deploy time when no send is done before', 
+            withModeler(sequentialChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                let activity = registry.get('Activity2');
+                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql([DEPLOYMENT_TIME]);
+            }
+        ));
 
-        // it('should unsubscribe at undeploy time when no send is done before', 
-        //     withModeler(sequentialChoreography, modeler => {
-        //         let finder = new SubscriptionFinder();
-        //         let registry = modeler.get('elementRegistry');
-        //         let activity = registry.get('Activity2');
-        //         expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql(UNDEPLOYMENT_TIME);
-        //     }
-        // ));
+        it('should unsubscribe at undeploy time when no send is done before', 
+            withModeler(sequentialChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                let activity = registry.get('Activity2');
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
+            }
+        ));
     });
 });
