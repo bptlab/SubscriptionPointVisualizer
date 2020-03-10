@@ -9,7 +9,7 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
     console.log(getParticipants(task));
     let before = search(task, incoming, each => isChoreography(each) && getParticipants(each).initiator === receiver);
     let after = search(task, outgoing, isChoreography);
-    let subscribe   = before[0] || task;
+    let subscribe = before[0] || task;
     let unsubscribe = this.rule3(task) || this.rule4(task) || after[after.length - 1]   || task;
     return new Subscription(subscribe, unsubscribe);
 }
