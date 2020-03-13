@@ -18,7 +18,7 @@ describe('Subscriptionfinder', function() {
                 let receiveActivity = registry.get('Activity3');
                 let sendActivity = registry.get('Activity1');
                 let subscriptions = finder.findSubscriptionsFor(receiveActivity);
-                expect(subscriptions.subscribeTasks).to.eql([sendActivity]);
+                expect(subscriptions.subscribeTasks).to.have.same.members([sendActivity]);
             }
         ));
 
@@ -27,7 +27,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity3');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([activity]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([activity]);
             }
         ));
 
@@ -36,7 +36,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity2');
-                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql([DEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.have.same.members([DEPLOYMENT_TIME]);
             }
         ));
 
@@ -45,7 +45,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity2');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([UNDEPLOYMENT_TIME]);
             }
         ));
     });
@@ -58,7 +58,7 @@ describe('Subscriptionfinder', function() {
                 let receiveActivity = registry.get('Activity3');
                 let sendActivity = registry.get('Activity1');
                 let subscriptions = finder.findSubscriptionsFor(receiveActivity);
-                expect(subscriptions.subscribeTasks).to.eql([sendActivity]);
+                expect(subscriptions.subscribeTasks).to.have.same.members([sendActivity]);
             }
         ));
 
@@ -67,7 +67,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity3');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([activity]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([activity]);
             }
         ));
 
@@ -76,7 +76,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity2');
-                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql([DEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.have.same.members([DEPLOYMENT_TIME]);
             }
         ));
 
@@ -85,7 +85,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity2');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([UNDEPLOYMENT_TIME]);
             }
         ));
     });
@@ -97,7 +97,7 @@ describe('Subscriptionfinder', function() {
                 let registry = modeler.get('elementRegistry');
                 let receiveActivity = registry.get('Activity3');
                 let sendActivities = [registry.get('Activity1a'), registry.get('Activity2b')];
-                expect(finder.findSubscriptionsFor(receiveActivity).subscribeTasks).to.eql(sendActivities);
+                expect(finder.findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members(sendActivities);
             }
         ));
 
@@ -106,7 +106,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity3');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([activity]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([activity]);
             }
         ));
 
@@ -115,9 +115,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity4');
-                console.log(registry.getAll().map(each => each.id))
-                console.log(activity);
-                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql([DEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.have.same.members([DEPLOYMENT_TIME]);
             }
         ));
 
@@ -126,7 +124,7 @@ describe('Subscriptionfinder', function() {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity4');
-                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([UNDEPLOYMENT_TIME]);
             }
         ));
     });

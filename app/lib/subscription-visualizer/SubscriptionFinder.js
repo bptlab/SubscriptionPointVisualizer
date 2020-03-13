@@ -9,36 +9,19 @@ export default function SubscriptionFinder() {
 
 SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
     let receiver = getParticipants(task).receiver;
-    console.log(getParticipants(task));
-    let before = search(task, incoming, each => isChoreography(each) && getParticipants(each).initiator === receiver);
-    let after = search(task, outgoing, isChoreography);
-    let subscribe = before[0] || DEPLOYMENT_TIME;
-    let unsubscribe = subscribe !== DEPLOYMENT_TIME ? task : UNDEPLOYMENT_TIME;
+    let subscribe;
+    let unsubscribe;
+    let incomingPaths = paths(task);
+    subscribe = incomingPaths
+        .map(each => each.filter(el => getParticipants(el).initiator === receiver))
+        .map(each => each[each.length - 1]);
+    if(subscribe.some(any => any === undefined)) {
+        subscribe = DEPLOYMENT_TIME;
+        unsubscribe = UNDEPLOYMENT_TIME;
+    } else {
+        unsubscribe = task;
+    } 
     return new Subscription(subscribe, unsubscribe);
-}
-
-/**
- * At deployment time, subscribe to all events you may receive before sending any message yourself
- * @param {*} task 
- */
-SubscriptionFinder.prototype.rule1 = function(task) {
-    //TODO
-    return false;
-}
-
-/**
- * Before sending a message, subscribe to all events you may receive before sending the next message
- */
-SubscriptionFinder.prototype.rule2 = function(task) {
-
-}
-
-SubscriptionFinder.prototype.rule3 = function(task) {
-
-}
-
-SubscriptionFinder.prototype.rule4 = function(task) {
-
 }
 
 function Subscription(subscribeTasks, unsubscribeTasks) {
@@ -48,25 +31,49 @@ function Subscription(subscribeTasks, unsubscribeTasks) {
     this.unsubscribeTasks = unsubscribeTasks;
 }
 
-const outgoing = 'outgoing';
-const incoming = 'incoming';
-function search(task, direction, filter) {
-    if(direction !== incoming && direction !== outgoing)direction = outgoing;
-    const flowDirection = direction === 'incoming' ? 'source' : 'target';
-    let interfaze = [task];
-    let result = [];
-    let visited = new Set([task]);
-    while(interfaze.length > 0) {
-        let current = interfaze.shift();
-        let next = current[direction];
-        next.forEach(each => {
-            let element = each[flowDirection];
-            if(!visited.has(element)) {
-                interfaze.push(element);
-                if(filter === undefined || filter(element))result.push(element);
-            }
-        });
+/**
+ * Returns an array of paths, where a path itself is an array of elements 
+ */
+function paths(element) {
+    const direction = 'incoming';
+    const flowDirection = 'source';
+    let incomingFlows = element[direction];
+    let incomingPaths = incomingFlows
+        .map(each => each[flowDirection])
+        .map(each => paths(each));
+    if(element.type === "bpmn:ExclusiveGateway") {
+        incomingPaths = [].concat(...incomingPaths);
+    } else if(element.type === "bpmn:ParallelGateway") {
+        while(incomingPaths.length > 1) {
+            let joinedPaths = [];
+            incomingPaths[0].forEach(first => 
+                incomingPaths[1].forEach(second => 
+                    joinedPaths.push(join(first, second))));
+            incomingPaths.shift();
+            incomingPaths[0] = joinedPaths;
+        }
+        incomingPaths = incomingPaths[0];
+    } else {
+        incomingPaths = [].concat(...incomingPaths);
     }
+    if(incomingPaths.length === 0) incomingPaths = [[]];
+    if(isChoreography(element)) incomingPaths.forEach(each => each.push(element));
+    return incomingPaths;
+}
+
+function join(path1, path2) {
+    const minLength = Math.min(path1.length, path2.length);
+    const maxLength = Math.max(path1.length, path2.length);
+    let result = [];
+    let i = 0;
+    for(; i < minLength && path1[i] === path2[i]; i++) {
+        result.push(path1[i]);
+    }
+    for(; i < maxLength && path1[i] !== path2[i]; i++) {
+        if(i < path1.length) result.push(path1[i]);
+        if(i < path2.length) result.push(path2[i]);
+    }
+    if(!(i === maxLength))throw "Violated assumption";
     return result;
 }
 
