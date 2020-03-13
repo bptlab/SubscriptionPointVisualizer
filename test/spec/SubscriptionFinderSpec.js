@@ -92,34 +92,41 @@ describe('Subscriptionfinder', function() {
 
     describe('activities in models with exclusive or event-based gateways', function () {
         it('should subscribe before all nearest preceding sends in all path', 
-            withModeler(parallelChoreography, modeler => {
+            withModeler(exclusiveChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
-                //TODO
+                let receiveActivity = registry.get('Activity3');
+                let sendActivities = [registry.get('Activity1a'), registry.get('Activity2b')];
+                expect(finder.findSubscriptionsFor(receiveActivity).subscribeTasks).to.eql(sendActivities);
             }
         ));
 
         it('should unsubscribe once the event has arrived, if preceding sends exists in all paths', 
-            withModeler(parallelChoreography, modeler => {
+            withModeler(exclusiveChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
-                //TODO
+                let activity = registry.get('Activity3');
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([activity]);
             }
         ));
 
         it('should subscribe at deploy time when there is a path where no send is done before', 
-            withModeler(parallelChoreography, modeler => {
+            withModeler(exclusiveChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
-                //TODO
+                let activity = registry.get('Activity4');
+                console.log(registry.getAll().map(each => each.id))
+                console.log(activity);
+                expect(finder.findSubscriptionsFor(activity).subscribeTasks).to.eql([DEPLOYMENT_TIME]);
             }
         ));
 
         it('should unsubscribe at undeploy time when there is a path where no send is done before', 
-            withModeler(parallelChoreography, modeler => {
+            withModeler(exclusiveChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
-                //TODO
+                let activity = registry.get('Activity4');
+                expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
             }
         ));
     });
