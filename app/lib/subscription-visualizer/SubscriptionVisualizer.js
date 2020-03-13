@@ -1,9 +1,8 @@
-import SubscriptionFinder, { DEPLOYMENT_TIME, UNDEPLOYMENT_TIME } from "./SubscriptionFinder";
+import findSubscriptionsFor, { DEPLOYMENT_TIME, UNDEPLOYMENT_TIME } from "./SubscriptionFinder";
 import { isChoreography } from "./Utils";
 
 export default function SubscriptionVisualizer(viewer) {
     this.viewer = viewer;
-    this.subscriptionFinder = new SubscriptionFinder(viewer);
     this.overlays = viewer.get('overlays');
     this.elementRegistry = viewer.get('elementRegistry');
     viewer.on('element.click', event => this.selected(event.element));
@@ -18,7 +17,7 @@ SubscriptionVisualizer.prototype.showSome = function() {
 SubscriptionVisualizer.prototype.showFor = function(element) {
     if(!element) return;
     const width = 5;
-    let subscription = this.subscriptionFinder.findSubscriptionsFor(element);
+    let subscription = findSubscriptionsFor(element);
 
     let left = subscription.subscribeTasks.map(each => {
         if(each === DEPLOYMENT_TIME) each = this.processBounds();

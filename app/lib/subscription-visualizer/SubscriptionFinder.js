@@ -3,7 +3,12 @@ import { isChoreography } from "./Utils";
 export const DEPLOYMENT_TIME = {id : 'deploy'};
 export const UNDEPLOYMENT_TIME = {id : 'undeploy'};
 
-export default function SubscriptionFinder() {
+export default function findSubscriptionsFor(task) {
+    let finder = new SubscriptionFinder();
+    return finder.findSubscriptionsFor(task);
+}
+
+function SubscriptionFinder() {
 
 }
 
