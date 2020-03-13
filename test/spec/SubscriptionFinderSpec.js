@@ -5,6 +5,7 @@ import { withModeler } from '../testUtils';
 const basicChoreography = require('../resources/BasicChoreography.bpmn');
 const sequentialChoreography = require('../resources/SequentialChoreography.bpmn');
 const parallelChoreography = require('../resources/ParallelChoreography.bpmn');
+const exclusiveChoreography = require('../resources/ExclusiveChoreography.bpmn');
 
 var assert = require('assert');
 describe('Subscriptionfinder', function() {
@@ -70,7 +71,7 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        it('should subscribe at deploy time when no send is done before in any path', 
+        it('should subscribe at deploy time when there is no path where a send is done before', 
             withModeler(parallelChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
@@ -79,12 +80,46 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        it('should unsubscribe at undeploy time when no send is done before in any path', 
+        it('should unsubscribe at undeploy time when there is no path where a send is done before', 
             withModeler(parallelChoreography, modeler => {
                 let finder = new SubscriptionFinder();
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity2');
                 expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.eql([UNDEPLOYMENT_TIME]);
+            }
+        ));
+    });
+
+    describe('activities in models with exclusive or event-based gateways', function () {
+        it('should subscribe before all nearest preceding sends in all path', 
+            withModeler(parallelChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                //TODO
+            }
+        ));
+
+        it('should unsubscribe once the event has arrived, if preceding sends exists in all paths', 
+            withModeler(parallelChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                //TODO
+            }
+        ));
+
+        it('should subscribe at deploy time when there is a path where no send is done before', 
+            withModeler(parallelChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                //TODO
+            }
+        ));
+
+        it('should unsubscribe at undeploy time when there is a path where no send is done before', 
+            withModeler(parallelChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                //TODO
             }
         ));
     });
