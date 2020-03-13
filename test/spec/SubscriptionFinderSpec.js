@@ -6,6 +6,7 @@ const basicChoreography = require('../resources/BasicChoreography.bpmn');
 const sequentialChoreography = require('../resources/SequentialChoreography.bpmn');
 const parallelChoreography = require('../resources/ParallelChoreography.bpmn');
 const exclusiveChoreography = require('../resources/ExclusiveChoreography.bpmn');
+const complexChoreography = require('../resources/ComplexChoreography.bpmn');
 
 var assert = require('assert');
 describe('Subscriptionfinder', function() {
@@ -125,6 +126,29 @@ describe('Subscriptionfinder', function() {
                 let registry = modeler.get('elementRegistry');
                 let activity = registry.get('Activity4');
                 expect(finder.findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([UNDEPLOYMENT_TIME]);
+            }
+        ));
+    });
+
+
+    describe('regression of', function () {
+        it('subscription with exclusive gateways in and before parallel', 
+            withModeler(complexChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity3');
+                let sendActivities = [registry.get('Activity1a'), registry.get('Activity1b')];
+                expect(finder.findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members(sendActivities);
+            }
+        ));
+
+        it('subscription over multiple differently typed gateways', 
+            withModeler(complexChoreography, modeler => {
+                let finder = new SubscriptionFinder();
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity4');
+                let sendActivities = [registry.get('Activity0a'), registry.get('Activity0b')];
+                expect(finder.findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members(sendActivities);
             }
         ));
     });
