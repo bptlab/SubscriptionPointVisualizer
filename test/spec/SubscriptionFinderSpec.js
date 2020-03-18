@@ -115,6 +115,26 @@ describe('Subscriptionfinder', function() {
                 expect(findSubscriptionsFor(activity).unsubscribeTasks).to.have.same.members([UNDEPLOYMENT_TIME]);
             }
         ));
+
+        it('should unsubscribe in other branch, as soon as an event indicates that the other branch has been chosen', 
+            withModeler(complexChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity1a');
+                let concurrentActivity = registry.get('Activity1b');
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, concurrentActivity]);
+            }
+        ));
+
+        
+        it('should unsubscribe in a following task, as soon as an event indicates that another branch has been chosen', 
+            withModeler(complexChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity2b');
+                let concurrentActivity = registry.get('Activity2a');
+                let followingActivity = registry.get('Activity3');
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, concurrentActivity, followingActivity]);
+            }
+        ));
     });
 
 
