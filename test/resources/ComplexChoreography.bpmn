@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema" id="_tTv5YOycEeiHGOQ2NkJZNQ">
+  <bpmn2:message id="Message_01iko1a" />
   <bpmn2:message id="Message_1buj4tf" />
   <bpmn2:message id="Message_1fcgcd7" />
   <bpmn2:message id="Message_0i33val" />
@@ -13,6 +14,7 @@
     <bpmn2:participant id="ParticipantB" name="Participant B" />
     <bpmn2:participant id="ParticipantA" name="Participant A" />
     <bpmn2:participant id="ParticipantC" name="Participant C" />
+    <bpmn2:messageFlow id="MessageFlow_0ism780" sourceRef="ParticipantC" targetRef="ParticipantA" messageRef="Message_01iko1a" />
     <bpmn2:messageFlow id="MessageFlow_1jn6jeb" sourceRef="ParticipantA" targetRef="ParticipantC" messageRef="Message_1buj4tf" />
     <bpmn2:messageFlow id="MessageFlow_0q12q7k" sourceRef="ParticipantA" targetRef="ParticipantB" messageRef="Message_1fcgcd7" />
     <bpmn2:messageFlow id="MessageFlow_05cgn89" sourceRef="ParticipantB" targetRef="ParticipantA" messageRef="Message_0i33val" />
@@ -100,11 +102,13 @@
       <bpmn2:incoming>SequenceFlow_1jb75ma</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0x6twrk</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_0lrhqw3</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_13lvo32</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_0x6twrk" sourceRef="ExclusiveGateway_13gvm8g" targetRef="Activity2a" />
     <bpmn2:exclusiveGateway id="ExclusiveGateway_1v3e7r4">
       <bpmn2:incoming>SequenceFlow_1q3bzo4</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_1hp0ui3</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_0srmi22</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_06g5jl4</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_06g5jl4" sourceRef="ExclusiveGateway_1v3e7r4" targetRef="ParallelGateway_0rw1vzs" />
@@ -153,6 +157,15 @@
       <bpmn2:messageFlowRef>MessageFlow_1jn6jeb</bpmn2:messageFlowRef>
     </bpmn2:choreographyTask>
     <bpmn2:sequenceFlow id="SequenceFlow_0yulmwq" sourceRef="Activity0b" targetRef="ExclusiveGateway_0l59qfd" />
+    <bpmn2:choreographyTask id="Activity2c" name="Activity 2c" initiatingParticipantRef="ParticipantC">
+      <bpmn2:incoming>SequenceFlow_13lvo32</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0srmi22</bpmn2:outgoing>
+      <bpmn2:participantRef>ParticipantC</bpmn2:participantRef>
+      <bpmn2:participantRef>ParticipantA</bpmn2:participantRef>
+      <bpmn2:messageFlowRef>MessageFlow_0ism780</bpmn2:messageFlowRef>
+    </bpmn2:choreographyTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_13lvo32" sourceRef="ExclusiveGateway_13gvm8g" targetRef="Activity2c" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0srmi22" sourceRef="Activity2c" targetRef="ExclusiveGateway_1v3e7r4" />
   </bpmn2:choreography>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Choreography_1" bpmnElement="Choreography">
@@ -187,7 +200,7 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1q3bzo4_di" bpmnElement="SequenceFlow_1q3bzo4">
         <di:waypoint x="765" y="336" />
         <di:waypoint x="816" y="336" />
-        <di:waypoint x="816" y="357" />
+        <di:waypoint x="816" y="405" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity3_di" bpmnElement="Activity3">
         <dc:Bounds x="930" y="200" width="100" height="80" />
@@ -250,8 +263,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1jb75ma_di" bpmnElement="SequenceFlow_1jb75ma">
         <di:waypoint x="559" y="265" />
-        <di:waypoint x="559" y="382" />
-        <di:waypoint x="584" y="382" />
+        <di:waypoint x="559" y="430" />
+        <di:waypoint x="584" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity1a_di" bpmnElement="Activity1a">
         <dc:Bounds x="664" y="44" width="100" height="80" />
@@ -272,19 +285,19 @@
         <dc:Bounds x="664" y="450" width="100" height="20" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_13gvm8g_di" bpmnElement="ExclusiveGateway_13gvm8g" isMarkerVisible="true">
-        <dc:Bounds x="584" y="357" width="50" height="50" />
+        <dc:Bounds x="584" y="405" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0x6twrk_di" bpmnElement="SequenceFlow_0x6twrk">
-        <di:waypoint x="609" y="357" />
+        <di:waypoint x="609" y="405" />
         <di:waypoint x="609" y="336" />
         <di:waypoint x="663" y="336" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1v3e7r4_di" bpmnElement="ExclusiveGateway_1v3e7r4" isMarkerVisible="true">
-        <dc:Bounds x="791" y="357" width="50" height="50" />
+        <dc:Bounds x="791" y="405" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_06g5jl4_di" bpmnElement="SequenceFlow_06g5jl4">
-        <di:waypoint x="841" y="382" />
-        <di:waypoint x="873" y="382" />
+        <di:waypoint x="841" y="430" />
+        <di:waypoint x="873" y="430" />
         <di:waypoint x="873" y="265" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1hjql54_di" bpmnElement="ExclusiveGateway_1hjql54" isMarkerVisible="true">
@@ -314,14 +327,12 @@
         <di:waypoint x="816" y="107" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0lrhqw3_di" bpmnElement="SequenceFlow_0lrhqw3">
-        <di:waypoint x="609" y="407" />
-        <di:waypoint x="609" y="430" />
+        <di:waypoint x="634" y="430" />
         <di:waypoint x="663" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1hp0ui3_di" bpmnElement="SequenceFlow_1hp0ui3">
         <di:waypoint x="765" y="430" />
-        <di:waypoint x="816" y="430" />
-        <di:waypoint x="816" y="407" />
+        <di:waypoint x="791" y="430" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1yky3q5_di" bpmnElement="ExclusiveGateway_1yky3q5" isMarkerVisible="true">
         <dc:Bounds x="150" y="215" width="50" height="50" />
@@ -370,6 +381,25 @@
         <di:waypoint x="307" y="314" />
         <di:waypoint x="333" y="314" />
         <di:waypoint x="333" y="265" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity2c_di" bpmnElement="Activity2c">
+        <dc:Bounds x="664" y="496" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_05lj55o" bpmnElement="ParticipantC" isMessageVisible="false" participantBandKind="top_initiating" choreographyActivityShape="Activity2c_di">
+        <dc:Bounds x="664" y="496" width="100" height="20" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_08hyseu" bpmnElement="ParticipantA" isMessageVisible="false" participantBandKind="bottom_non_initiating" choreographyActivityShape="Activity2c_di">
+        <dc:Bounds x="664" y="556" width="100" height="20" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_13lvo32_di" bpmnElement="SequenceFlow_13lvo32">
+        <di:waypoint x="609" y="455" />
+        <di:waypoint x="609" y="536" />
+        <di:waypoint x="663" y="536" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0srmi22_di" bpmnElement="SequenceFlow_0srmi22">
+        <di:waypoint x="765" y="536" />
+        <di:waypoint x="816" y="536" />
+        <di:waypoint x="816" y="455" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="BPMNLabelStyle_1">
