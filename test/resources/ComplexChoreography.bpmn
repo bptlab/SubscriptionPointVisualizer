@@ -15,7 +15,7 @@
     <bpmn2:participant id="ParticipantA" name="Participant A" />
     <bpmn2:participant id="ParticipantC" name="Participant C" />
     <bpmn2:messageFlow id="MessageFlow_0ism780" sourceRef="ParticipantC" targetRef="ParticipantA" messageRef="Message_01iko1a" />
-    <bpmn2:messageFlow id="MessageFlow_1jn6jeb" sourceRef="ParticipantA" targetRef="ParticipantC" messageRef="Message_1buj4tf" />
+    <bpmn2:messageFlow id="MessageFlow_1jn6jeb" sourceRef="ParticipantA" targetRef="ParticipantB" messageRef="Message_1buj4tf" />
     <bpmn2:messageFlow id="MessageFlow_0q12q7k" sourceRef="ParticipantA" targetRef="ParticipantB" messageRef="Message_1fcgcd7" />
     <bpmn2:messageFlow id="MessageFlow_05cgn89" sourceRef="ParticipantB" targetRef="ParticipantA" messageRef="Message_0i33val" />
     <bpmn2:messageFlow id="MessageFlow_0evq5mr" sourceRef="ParticipantB" targetRef="ParticipantA" messageRef="Message_0bfu6v1" />
@@ -153,7 +153,7 @@
       <bpmn2:incoming>SequenceFlow_1oxy48v</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0yulmwq</bpmn2:outgoing>
       <bpmn2:participantRef>ParticipantA</bpmn2:participantRef>
-      <bpmn2:participantRef>ParticipantC</bpmn2:participantRef>
+      <bpmn2:participantRef>ParticipantB</bpmn2:participantRef>
       <bpmn2:messageFlowRef>MessageFlow_1jn6jeb</bpmn2:messageFlowRef>
     </bpmn2:choreographyTask>
     <bpmn2:sequenceFlow id="SequenceFlow_0yulmwq" sourceRef="Activity0b" targetRef="ExclusiveGateway_0l59qfd" />
@@ -374,7 +374,7 @@
       <bpmndi:BPMNShape id="BPMNShape_0kq61cu" bpmnElement="ParticipantA" isMessageVisible="false" participantBandKind="top_initiating" choreographyActivityShape="Activity0b_di">
         <dc:Bounds x="206" y="274" width="100" height="20" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_08pi94h" bpmnElement="ParticipantC" isMessageVisible="false" participantBandKind="bottom_non_initiating" choreographyActivityShape="Activity0b_di">
+      <bpmndi:BPMNShape id="BPMNShape_08pi94h" bpmnElement="ParticipantB" isMessageVisible="false" participantBandKind="bottom_non_initiating" choreographyActivityShape="Activity0b_di">
         <dc:Bounds x="206" y="334" width="100" height="20" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0yulmwq_di" bpmnElement="SequenceFlow_0yulmwq">
