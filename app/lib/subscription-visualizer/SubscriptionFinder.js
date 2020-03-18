@@ -18,6 +18,7 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
     let unsubscribe;
     let incomingPaths = paths(task);
     subscribe = incomingPaths
+        .map(each => each.filter(isChoreography))
         .map(each => each.filter(el => getParticipants(el).initiator === receiver))
         .map(each => each[each.length - 1]);
     if(subscribe.some(any => any === undefined)) {
@@ -30,10 +31,12 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
 }
 
 function Subscription(subscribeTasks, unsubscribeTasks) {
-    if(!Array.isArray(subscribeTasks))subscribeTasks = [subscribeTasks];
-    if(!Array.isArray(unsubscribeTasks))unsubscribeTasks = [unsubscribeTasks];
-    this.subscribeTasks = subscribeTasks;
-    this.unsubscribeTasks = unsubscribeTasks;
+    let isIterable = obj =>  obj != null && typeof obj[Symbol.iterator] === 'function';
+    let removeDuplicates = arr => [...new Set(arr)];
+    if(!isIterable(subscribeTasks))subscribeTasks = [subscribeTasks];
+    if(!isIterable(unsubscribeTasks))unsubscribeTasks = [unsubscribeTasks];
+    this.subscribeTasks = removeDuplicates(subscribeTasks);
+    this.unsubscribeTasks = removeDuplicates(unsubscribeTasks);
 }
 
 /**
@@ -52,8 +55,10 @@ function paths(element) {
         while(incomingPaths.length > 1) {
             let joinedPaths = [];
             incomingPaths[0].forEach(first => 
-                incomingPaths[1].forEach(second => 
-                    joinedPaths.push(join(first, second))));
+                incomingPaths[1].forEach(second => {
+                    let joinedPath = join(first, second);
+                    if(joinedPath)joinedPaths.push(joinedPath);
+                }));
             incomingPaths.shift();
             incomingPaths[0] = joinedPaths;
         }
@@ -62,10 +67,19 @@ function paths(element) {
         incomingPaths = [].concat(...incomingPaths);
     }
     if(incomingPaths.length === 0) incomingPaths = [[]];
-    if(isChoreography(element)) incomingPaths.forEach(each => each.push(element));
+    incomingPaths.forEach(each => each.push(element));
     return incomingPaths;
 }
 
+/**
+ * At a parallel join, 
+ * paths come from different incoming sequence flows
+ * the paths of two incoming directions can be joined
+ * if and only if they have an identical start and then do have no task in common
+ * this is correct because if they have a task in common after the first sequence of different tasks, this means that 
+ *  an exclusive join occured before and the paths to be joined chose different paths incoming to this gateway
+ *      => Then there exists a path that has chosen the same path at this exclusive gateway that will be joined
+ */
 function join(path1, path2) {
     const minLength = Math.min(path1.length, path2.length);
     const maxLength = Math.max(path1.length, path2.length);
@@ -78,7 +92,7 @@ function join(path1, path2) {
         if(i < path1.length) result.push(path1[i]);
         if(i < path2.length) result.push(path2[i]);
     }
-    if(!(i === maxLength))throw "Violated assumption";
+    if(!(i === maxLength)) return undefined;//Not joinable
     return result;
 }
 
