@@ -1,5 +1,7 @@
 # SubscriptionPointVisualizer ![Build](https://github.com/bptlab/subscription-point-visualizer/workflows/Node.js%20CI/badge.svg)
 Visualizes subscription points in bpmn choreography diagrams.
+![Screenshot](https://user-images.githubusercontent.com/28008098/76978904-90b32a00-6937-11ea-8b22-a50307b21fa3.png)
+
 
 ## Usage
 
