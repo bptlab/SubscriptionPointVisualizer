@@ -1,4 +1,4 @@
-import { isChoreography } from "./Utils";
+import { isChoreographyActivity } from "./Utils";
 
 export const DEPLOYMENT_TIME = {id : 'deploy'};
 export const UNDEPLOYMENT_TIME = {id : 'undeploy'};
@@ -13,12 +13,14 @@ function SubscriptionFinder() {
 }
 
 SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
+    console.log(topMost(task).type);
+    console.log(task.parent.type);
     let receiver = getParticipants(task).receiver;
     let subscribe;
     let unsubscribe;
     let incomingPaths = paths(task);
     subscribe = incomingPaths
-        .map(each => each.filter(isChoreography))
+        .map(each => each.filter(isChoreographyActivity))
         .map(each => each.filter(el => getParticipants(el).initiator === receiver))
         .map(each => each[each.length - 1]);
     if(subscribe.some(any => any === undefined)) {
@@ -110,4 +112,8 @@ function getParticipants(task) {
             receiver : refs[0]
         }
     } else return undefined;
+}
+
+function topMost(element) {
+    return element.parent ? topMost(element.parent) : element;
 }

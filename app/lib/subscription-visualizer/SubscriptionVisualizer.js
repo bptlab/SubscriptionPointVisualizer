@@ -1,5 +1,5 @@
 import findSubscriptionsFor, { DEPLOYMENT_TIME, UNDEPLOYMENT_TIME } from "./SubscriptionFinder";
-import { isChoreography } from "./Utils";
+import { isChoreographyActivity } from "./Utils";
 
 export default function SubscriptionVisualizer(viewer) {
     this.viewer = viewer;
@@ -48,7 +48,7 @@ SubscriptionVisualizer.prototype.selected = function(element) {
     let lastElement = this.selectedElement;
     this.hideOverlays();
     if(element != lastElement) {
-        if(isChoreography(element)) {
+        if(isChoreographyActivity(element)) {
             this.showFor(element);
         }
     }
