@@ -1,4 +1,4 @@
-import { isChoreographyActivity } from "./Utils";
+import { isChoreographyActivity, isChoreographyProcess } from "./Utils";
 
 export const DEPLOYMENT_TIME = {id : 'deploy'};
 export const UNDEPLOYMENT_TIME = {id : 'undeploy'};
@@ -13,9 +13,13 @@ function SubscriptionFinder() {
 }
 
 SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
-    console.log(topMost(task).type);
-    console.log(task.parent.type);
     let receiver = getParticipants(task).receiver;
+    let isPossibleUnsubscribe = candidate => {
+        if(!isChoreographyActivity(candidate))return false;
+        let participants = getParticipants(candidate)
+        return participants.initiator === receiver || participants.receiver === receiver;
+    }
+
     let subscribe;
     let unsubscribe;
     let incomingPaths = paths(task);
@@ -27,14 +31,26 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         subscribe = DEPLOYMENT_TIME;
         unsubscribe = UNDEPLOYMENT_TIME;
     } else {
-        unsubscribe = task;
+        let process = parentProcess(task);
+        let allPaths = removeDuplicates(endEvents(process).map(paths).flat());
+        allPaths.forEach(each => each.includesTask = each.includes(task));
+        let allChoreos = choreographies(process);
+        unsubscribe = allChoreos
+            //That indicate possible unsubscription because they never occur when the task occurs
+            .filter(each => allPaths.every(path => !path.includes(each) || !path.includesTask))
+            //Find the next possible unsubscribe task that is safe (i.e. always occurs when the unsubscription indicator has occured)
+            .map(each => findNext(each, next => isPossibleUnsubscribe(next) && allPaths.every(path => !path.includes(each) || path.includes(next))));
+        if(unsubscribe.every(each => each !== undefined)) {
+            unsubscribe.push(task);
+        } else {
+            unsubscribe = UNDEPLOYMENT_TIME;
+        }
     } 
     return new Subscription(subscribe, unsubscribe);
 }
 
 function Subscription(subscribeTasks, unsubscribeTasks) {
     let isIterable = obj =>  obj != null && typeof obj[Symbol.iterator] === 'function';
-    let removeDuplicates = arr => [...new Set(arr)];
     if(!isIterable(subscribeTasks))subscribeTasks = [subscribeTasks];
     if(!isIterable(unsubscribeTasks))unsubscribeTasks = [unsubscribeTasks];
     this.subscribeTasks = removeDuplicates(subscribeTasks);
@@ -98,6 +114,29 @@ function join(path1, path2) {
     return result;
 }
 
+function findNext(task, filter) {
+    if(filter(task))return task;
+    const direction = 'outgoing';
+    const flowDirection = 'target';
+    let interfaze = [task];
+    let visited = new Set([task]);
+    while(interfaze.length > 0) {
+        let current = interfaze.shift();
+        let next = current[direction];
+        let found = next
+            .map(each => each[flowDirection])
+            .find(each => {
+                if(!visited.has(each)) {
+                    interfaze.push(each);
+                    visited.add(each);
+                    return filter(each);
+                }
+                return false;
+            });
+        if(found) return found;
+    }
+}
+
 function getParticipants(task) {
     let initiator = task.businessObject.get('initiatingParticipantRef').id;
     let refs = task.businessObject.get('participantRef');
@@ -114,6 +153,18 @@ function getParticipants(task) {
     } else return undefined;
 }
 
-function topMost(element) {
-    return element.parent ? topMost(element.parent) : element;
+function parentProcess(element) {
+    return isChoreographyProcess(element) ? element : parentProcess(element.parent);
+}
+
+function endEvents(process) {
+    return process.children.filter(each => each.type === 'bpmn:EndEvent')
+}
+
+function choreographies(process) {
+    return process.children.filter(isChoreographyActivity);
+}
+
+function removeDuplicates(arr) {
+    return [...new Set(arr)];
 }
