@@ -147,14 +147,14 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        // it('should unsubscribe in a following task, as soon as an event indicates that another branch has been chosen, even when one alternative is empty', 
-        //     withModeler(emptyAlternativeChoreography, modeler => {
-        //         let registry = modeler.get('elementRegistry');
-        //         let receiveActivity = registry.get('Activity1');
-        //         let followingActivity = registry.get('Activity2');
-        //         expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, followingActivity]);
-        //     }
-        // ));
+        it('should unsubscribe in a following task, as soon as an event indicates that another branch has been chosen, even when one alternative is empty', 
+            withModeler(emptyAlternativeChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity1');
+                let followingActivity = registry.get('Activity2');
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, followingActivity]);
+            }
+        ));
     });
 
 

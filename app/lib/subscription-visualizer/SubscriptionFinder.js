@@ -37,9 +37,11 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         unsubscribe = allPaths
             .map(path => path
                 .filter(isPossibleUnsubscribe)
+                //Unsubscription is only save if we know that the selected task cannot occur anymore. 
+                //The selected task cannot occur anymore if the possible unsubscribe either always happens after it, or implies that another alternative has been chosen
                 .filter(each => canReach(task, each) || allPaths.every(p => !p.includes(each) || !p.includes(task))))
             .map(path => path[path.length - 1]);
-            
+
         if(unsubscribe.every(each => each !== undefined)) {
             unsubscribe.push(task);
         } else {
