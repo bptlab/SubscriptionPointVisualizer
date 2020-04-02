@@ -183,6 +183,15 @@ describe('Subscriptionfinder', function() {
                 expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity]);
             }
         ));
+
+        it('duplicate unsubscribe in alternative', 
+            withModeler(exclusiveRegressionChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity2b');
+                let alternative = registry.get('Activity1a');
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([alternative]);
+            }
+        ));
     });
 
 });
