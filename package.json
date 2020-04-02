@@ -1,6 +1,6 @@
 {
   "name": "subscription-point-visualizer",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Visualizes subscription points in bpmn choreography diagrams.",
   "main": "app/app.js",
   "scripts": {
