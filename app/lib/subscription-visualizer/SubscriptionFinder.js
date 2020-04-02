@@ -35,11 +35,15 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         let allPaths = removeDuplicates(endEvents(process).map(paths).flat());
         allPaths.forEach(each => each.includesTask = each.includes(task));
         let allChoreos = choreographies(process);
-        unsubscribe = allChoreos
+        let indicators = allChoreos
             //That can occur after a subscription
-            .filter(each => subscribe.some(subscriptionPoint => findNext(subscriptionPoint, next => next === each) !== undefined))
+            .filter(each => subscribe.some(subscriptionPoint => canReach(subscriptionPoint, each)))
             //That indicate possible unsubscription because they never occur when the task occurs
-            .filter(each => allPaths.every(path => !path.includes(each) || !path.includesTask))
+            .filter(each => allPaths.every(path => !path.includes(each) || !path.includesTask));
+            
+        unsubscribe = indicators
+            //Ignore indicators where another indicator exists that savely occurs before 
+            .filter(each => !indicators.some(any => any !== each && allPaths.every(path => path.includes(any) || !path.includes(each)) && canReach(any, each)))
             //Find the next possible unsubscribe task that is safe (i.e. always occurs when the unsubscription indicator has occured)
             .map(each => findNext(each, next => isPossibleUnsubscribe(next) && allPaths.every(path => !path.includes(each) || path.includes(next))));
         if(unsubscribe.every(each => each !== undefined)) {
@@ -137,6 +141,10 @@ function findNext(task, filter) {
             });
         if(found) return found;
     }
+}
+
+function canReach(taskA, taskB) {
+    return findNext(taskA, each => each === taskB) !== undefined;
 }
 
 function getParticipants(task) {
