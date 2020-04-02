@@ -18,11 +18,11 @@ export function createModeler(xml, container) {
     });
 }
 
-export function withModeler(xml, func) {
+export function withElements(xml, func) {
     return function(done) {
         createModeler(xml, TestContainer.get(this)).then(function(modeler) {
             try {
-                func(modeler);
+                func(modeler.get('elementRegistry'));
             } catch(e) {
                 done(e);
             }
