@@ -10,6 +10,7 @@ const complexChoreography = require('../resources/ComplexChoreography.bpmn');
 const unsubscribeChoreography = require('../resources/UnsubscribeChoreography.bpmn');
 const emptyAlternativeChoreography = require('../resources/EmptyAlternativeChoreography.bpmn');
 const exclusiveRegressionChoreography = require('../resources/ExclusiveRegressionChoreography.bpmn');
+const nestedExclusiveChoreography = require('../resources/NestedExclusiveChoreography.bpmn');
 
 var assert = require('assert');
 describe('Subscriptionfinder', function() {
@@ -184,12 +185,21 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        it('duplicate unsubscribe in alternative', 
+        it('duplicate unsubscribe in alternative sequence', 
             withModeler(exclusiveRegressionChoreography, modeler => {
                 let registry = modeler.get('elementRegistry');
                 let receiveActivity = registry.get('Activity2b');
                 let concurrentActivity = registry.get('Activity1a');
                 expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, concurrentActivity]);
+            }
+        ));
+
+        it('duplicate unsubscribe in alternative nested exclusive gateway', 
+            withModeler(nestedExclusiveChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity1');
+                let concurrentActivities = [registry.get('Activity2a'), registry.get('Activity2b')];
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity].concat(concurrentActivities));
             }
         ));
     });
