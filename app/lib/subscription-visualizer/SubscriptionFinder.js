@@ -31,21 +31,15 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         subscribe = DEPLOYMENT_TIME;
         unsubscribe = UNDEPLOYMENT_TIME;
     } else {
-        let process = parentProcess(task);
-        let allPaths = removeDuplicates(endEvents(process).map(paths).flat());
-        allPaths.forEach(each => each.includesTask = each.includes(task));
-        let allChoreos = choreographies(process);
-        let indicators = allChoreos
-            //That can occur after a subscription
-            .filter(each => subscribe.some(subscriptionPoint => canReach(subscriptionPoint, each)))
-            //That indicate possible unsubscription because they never occur when the task occurs
-            .filter(each => allPaths.every(path => !path.includes(each) || !path.includesTask));
+        let allPaths = subscribe
+            .map(each => paths(each, 'outgoing'))
+            .flat();
+        unsubscribe = allPaths
+            .map(path => path
+                .filter(isPossibleUnsubscribe)
+                .filter(each => canReach(task, each) || allPaths.every(p => !p.includes(each) || !p.includes(task))))
+            .map(path => path[path.length - 1]);
             
-        unsubscribe = indicators
-            //Ignore indicators where another indicator exists that savely occurs before 
-            .filter(each => !indicators.some(any => any !== each && allPaths.every(path => path.includes(any) || !path.includes(each)) && canReach(any, each)))
-            //Find the next possible unsubscribe task that is safe (i.e. always occurs when the unsubscription indicator has occured)
-            .map(each => findNext(each, next => isPossibleUnsubscribe(next) && allPaths.every(path => !path.includes(each) || path.includes(next))));
         if(unsubscribe.every(each => each !== undefined)) {
             unsubscribe.push(task);
         } else {
@@ -66,13 +60,13 @@ function Subscription(subscribeTasks, unsubscribeTasks) {
 /**
  * Returns an array of paths, where a path itself is an array of elements 
  */
-function paths(element) {
-    const direction = 'incoming';
-    const flowDirection = 'source';
+function paths(element, direction) {
+    if(!direction) direction = 'incoming';
+    const flowDirection = direction === 'incoming' ? 'source' : 'target';
     let incomingFlows = element[direction];
     let incomingPaths = incomingFlows
         .map(each => each[flowDirection])
-        .map(each => paths(each));
+        .map(each => paths(each, direction));
     if(element.type === "bpmn:ExclusiveGateway") {
         incomingPaths = [].concat(...incomingPaths);
     } else if(element.type === "bpmn:ParallelGateway") {
