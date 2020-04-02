@@ -8,6 +8,8 @@ const parallelChoreography = require('../resources/ParallelChoreography.bpmn');
 const exclusiveChoreography = require('../resources/ExclusiveChoreography.bpmn');
 const complexChoreography = require('../resources/ComplexChoreography.bpmn');
 const unsubscribeChoreography = require('../resources/UnsubscribeChoreography.bpmn');
+const emptyAlternativeChoreography = require('../resources/EmptyAlternativeChoreography.bpmn');
+const exclusiveRegressionChoreography = require('../resources/ExclusiveRegressionChoreography.bpmn');
 
 var assert = require('assert');
 describe('Subscriptionfinder', function() {
@@ -126,7 +128,7 @@ describe('Subscriptionfinder', function() {
             }
         ));
 
-        it('should unsubscribe at undeployment, if there is an path where no event indicates that another branch has been chosen', 
+        it('should unsubscribe at undeployment, if there is a path where no event indicates that another branch has been chosen', 
             withModeler(unsubscribeChoreography, modeler => {
                 let registry = modeler.get('elementRegistry');
                 let receiveActivity = registry.get('Activity1');
@@ -143,6 +145,15 @@ describe('Subscriptionfinder', function() {
                 expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, concurrentActivity, followingActivity]);
             }
         ));
+
+        // it('should unsubscribe in a following task, as soon as an event indicates that another branch has been chosen, even when one alternative is empty', 
+        //     withModeler(emptyAlternativeChoreography, modeler => {
+        //         let registry = modeler.get('elementRegistry');
+        //         let receiveActivity = registry.get('Activity1');
+        //         let followingActivity = registry.get('Activity2');
+        //         expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity, followingActivity]);
+        //     }
+        // ));
     });
 
 
@@ -162,6 +173,14 @@ describe('Subscriptionfinder', function() {
                 let receiveActivity = registry.get('Activity4');
                 let sendActivities = [registry.get('Activity0a'), registry.get('Activity0b')];
                 expect(findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members(sendActivities);
+            }
+        ));
+
+        it('when subscribe already is on one alternative, no unsubscribe is needed on the other one', 
+            withModeler(exclusiveRegressionChoreography, modeler => {
+                let registry = modeler.get('elementRegistry');
+                let receiveActivity = registry.get('Activity1b');
+                expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity]);
             }
         ));
     });

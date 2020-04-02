@@ -36,6 +36,8 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         allPaths.forEach(each => each.includesTask = each.includes(task));
         let allChoreos = choreographies(process);
         unsubscribe = allChoreos
+            //That can occur after a subscription
+            .filter(each => subscribe.some(subscriptionPoint => findNext(subscriptionPoint, next => next === each) !== undefined))
             //That indicate possible unsubscription because they never occur when the task occurs
             .filter(each => allPaths.every(path => !path.includes(each) || !path.includesTask))
             //Find the next possible unsubscribe task that is safe (i.e. always occurs when the unsubscription indicator has occured)
