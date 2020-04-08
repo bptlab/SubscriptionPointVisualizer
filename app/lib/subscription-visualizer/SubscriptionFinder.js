@@ -31,6 +31,10 @@ SubscriptionFinder.prototype.findSubscriptionsFor = function(task) {
         subscribe = DEPLOYMENT_TIME;
         unsubscribe = UNDEPLOYMENT_TIME;
     } else {
+        // Filter out all subscription points that are obsolete because other subscriptions happen before
+        subscribe = subscribe.filter(each => !subscribe.some(other => other !== each && canReach(other, each)));
+
+        //Calculate Unsubscription points
         let allPaths = subscribe
             .map(each => paths(each, 'outgoing'))
             .flat();
