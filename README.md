@@ -15,3 +15,7 @@ npm run serve
 The visualizer is then served to `http://localhost:9024`.
 
 Click on a choreography task to see the subscription points (green) and unsubscription points (red). If the indicator is placed at the border of the whole process, (un-)deployment time (un-)subscription is indicated.
+
+#
+
+This repository is based on [chor-js](https://github.com/bptlab/chor-js)
