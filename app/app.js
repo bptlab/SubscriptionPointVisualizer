@@ -1,4 +1,4 @@
-import xml from '../test/resources/ExclusiveChoreography.bpmn';
+import xml from '../test/resources/UnsubscribeChoreography.bpmn';
 import blankXml from './diagrams/newDiagram.bpmn';
 import $ from 'jquery';
 import ChoreoModeler from 'chor-js/lib/Modeler';
@@ -53,7 +53,6 @@ $(function() {
   const validateButton = $('#js-validate');
   const panelToggle = $('#panel-toggle');
   const propertiesPanel = $('#properties-panel');
-  const subscriptionsButton = $('#js-subscriptions');
 
   panelToggle.click(e => {
     propertiesPanel.toggle();
@@ -75,10 +74,6 @@ $(function() {
       $(e.target).prop('title', 'Check diagram for problems');
 
     }
-  });
-
-  subscriptionsButton.click(e => {
-      subscriptionVisualizer.showSome();
   });
 
   $('.buttons a').click(function(e) {
