@@ -192,6 +192,14 @@ describe('Subscriptionfinder', function() {
                 expect(findSubscriptionsFor(receiveActivity).unsubscribeTasks).to.have.same.members([receiveActivity].concat(concurrentActivities));
             }
         ));
+
+        it('unnecessary subscribe in one gateway alternative, when there is already a subscribe before the split', 
+            withElements(nestedExclusiveChoreography, elements => {
+                let receiveActivity = elements.get('Activity4');
+                let subscribeActivity = elements.get('Activity0');
+                expect(findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members([subscribeActivity]);
+            }
+        ));
     });
 
 });
