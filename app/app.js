@@ -59,7 +59,7 @@ $(function() {
     $('#open-toggle').toggle();
     $('#close-toggle').toggle();
   });
-  let isValidating = false;
+  let isValidating = true;
 
   validateButton.click(e => {
     if (!isValidating) {
@@ -125,6 +125,9 @@ $(function() {
   });
 
   exportArtifacts();
+  if (isValidating) {
+    reporter.validateDiagram();
+  }
   modeler.on('commandStack.changed', exportArtifacts);
   modeler.on('commandStack.changed', function() {
     if (isValidating) {
