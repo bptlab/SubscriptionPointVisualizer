@@ -11,6 +11,7 @@ const unsubscribeChoreography = require('../resources/UnsubscribeChoreography.bp
 const emptyAlternativeChoreography = require('../resources/EmptyAlternativeChoreography.bpmn');
 const exclusiveRegressionChoreography = require('../resources/ExclusiveRegressionChoreography.bpmn');
 const nestedExclusiveChoreography = require('../resources/NestedExclusiveChoreography.bpmn');
+const multipleExclusiveChoreography = require('../resources/MultipleExclusiveChoreography.bpmn');
 
 var assert = require('assert');
 describe('Subscriptionfinder', function() {
@@ -194,10 +195,10 @@ describe('Subscriptionfinder', function() {
         ));
 
         it('unnecessary subscribe in one gateway alternative, when there is already a subscribe before the split', 
-            withElements(nestedExclusiveChoreography, elements => {
-                let receiveActivity = elements.get('Activity4');
-                let subscribeActivity = elements.get('Activity0');
-                expect(findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members([subscribeActivity]);
+            withElements(multipleExclusiveChoreography, elements => {
+                let receiveActivity = elements.get('Activity2');
+                let subscribeActivities = [elements.get('Activity0a'), elements.get('Activity0b')];
+                expect(findSubscriptionsFor(receiveActivity).subscribeTasks).to.have.same.members(subscribeActivities);
             }
         ));
     });
