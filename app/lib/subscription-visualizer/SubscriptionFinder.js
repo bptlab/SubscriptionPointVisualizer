@@ -1,4 +1,4 @@
-import { isChoreographyActivity, isChoreographyProcess } from "./Utils";
+import { isChoreographyActivity, isChoreographyProcess, getParticipants } from "./Utils";
 
 export const DEPLOYMENT_TIME = {id : 'deploy'};
 export const UNDEPLOYMENT_TIME = {id : 'undeploy'};
@@ -143,21 +143,6 @@ function canReach(taskA, taskB) {
     return findNext(taskA, each => each === taskB) !== undefined;
 }
 
-function getParticipants(task) {
-    let initiator = task.businessObject.get('initiatingParticipantRef').id;
-    let refs = task.businessObject.get('participantRef');
-    if(refs[0].id === initiator) {
-        return {
-            initiator : refs[0],
-            receiver : refs[1]
-        }
-    } else if(refs[1].id === initiator) {
-        return {
-            initiator : refs[1],
-            receiver : refs[0]
-        }
-    } else return undefined;
-}
 
 function parentProcess(element) {
     return isChoreographyProcess(element) ? element : parentProcess(element.parent);
